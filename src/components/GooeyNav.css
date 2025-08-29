@@ -1,0 +1,160 @@
+/* Color Palette */
+:root {
+  --color-1: #0025f7;
+  --color-2: #2300e7;
+  --color-3: #0004ff;
+
+}
+
+/* Base container for the nav */
+.gooey-nav-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.gooey-nav-container nav {
+  position: relative;
+}
+
+.gooey-nav-container nav ul {
+  display: flex;
+  gap: 1.5em; /* Slightly reduced gap for a tighter look */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  z-index: 2; /* Above the effect container */
+}
+
+.gooey-nav-container nav ul li {
+  position: relative;
+  cursor: pointer;
+  color: hsl(0 0% 100% / 0.8);
+  transition: color 0.3s ease;
+  border-radius: 999px;
+}
+
+.gooey-nav-container nav ul li:hover {
+  color: white;
+}
+
+.gooey-nav-container nav ul li a {
+  display: inline-block;
+  padding: 0.6em 1.2em;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 500;
+  /* FIX: Remove the default blue browser outline on focus */
+  outline: none;
+}
+
+/* Accessible focus state - provides an alternative to the default outline */
+.gooey-nav-container nav ul li:focus-within {
+  box-shadow: 0 0 0 2px var(--color-4);
+  outline-offset: 2px;
+}
+
+/* Hide original text when active, the effect will show it */
+.gooey-nav-container nav ul li.active {
+  color: transparent;
+}
+
+/* --- Gooey Effect Styles --- */
+.gooey-nav-container .effect {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+}
+
+.gooey-nav-container .effect.text {
+  color: white;
+  font-weight: 500;
+  z-index: 3; /* Above the filter effect */
+  transition: color 0.3s ease;
+}
+
+.gooey-nav-container .effect.text.active {
+  color: black;
+}
+
+.gooey-nav-container .effect.filter {
+  /* Use the more reliable SVG filter defined in GooeyNav.tsx */
+  filter: url(#goo);
+  z-index: 1;
+}
+
+/* This pseudo-element creates the white pill background */
+.gooey-nav-container .effect.filter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: white;
+  transform: scale(0);
+  opacity: 0;
+  z-index: -1;
+  border-radius: 999px;
+  animation: pill 0.4s ease-out forwards;
+}
+
+@keyframes pill {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* --- Particle Styles --- */
+.particle,
+.point {
+  display: block;
+  opacity: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  transform-origin: center;
+}
+
+.particle {
+  position: absolute;
+  top: calc(50% - 8px);
+  left: calc(50% - 8px);
+  animation: particle-anim calc(var(--time)) cubic-bezier(0.1, 0.5, 0.7, 1) forwards;
+}
+
+.point {
+  background: var(--color);
+  animation: point-anim calc(var(--time)) cubic-bezier(0.2, 0.8, 0.7, 1) forwards;
+}
+
+/* Simplified and smoother keyframes */
+@keyframes particle-anim {
+  0% {
+    transform: rotate(0deg) translate(var(--start-x), var(--start-y)) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(var(--rotate)) translate(var(--end-x), var(--end-y)) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes point-anim {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  25%, 65% {
+    transform: scale(var(--scale));
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
